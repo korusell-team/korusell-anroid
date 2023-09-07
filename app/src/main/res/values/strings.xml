@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">KORUSELL</string>
+    <string name="skip">Пропустить</string>
+    <string name="welcome_text">С легкостью найти \nсамых нужных людей и места!</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="get_sms">Получить СМС</string>
+    <string name="code">Код</string>
+    <string name="login">Войти</string>
+    <string name="contacts">Контакты</string>
+    <string name="search">Поиск</string>
+    <string name="map">Карты</string>
+</resources>
