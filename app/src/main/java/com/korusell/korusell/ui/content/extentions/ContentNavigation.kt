@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.korusell.korusell.ui.content.ContentRoutes
@@ -27,7 +27,9 @@ fun ContentNavigation(
             .padding(horizontal = 24.dp)
             .padding(bottom = 16.dp)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = Color.Black.copy(
+                    alpha = 0.1f
+                ),
                 shape = RoundedCornerShape(24.dp)
             )
     ) {
