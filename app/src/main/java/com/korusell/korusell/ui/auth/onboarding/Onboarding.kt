@@ -57,7 +57,8 @@ private fun SkipButton(
     onSkip: (Int) -> Unit
 ) = ClickableText(
     modifier = modifier,
-    text = AnnotatedString(stringResource(R.string.skip)),//TODO
+    text = AnnotatedString(stringResource(R.string.skip)),
+    style = MaterialTheme.typography.bodySmall,
     onClick = onSkip
 )
 
@@ -93,7 +94,7 @@ private fun WelcomeText(
         .fillMaxWidth()
         .padding(horizontal = 16.dp),
     text = stringResource(R.string.welcome_text),
-    style = MaterialTheme.typography.bodyMedium,//TODO
+    style = MaterialTheme.typography.bodyMedium,
     textAlign = TextAlign.Center
 )
 

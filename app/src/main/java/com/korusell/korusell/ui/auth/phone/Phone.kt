@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,11 +39,9 @@ fun Phone(
     verticalArrangement = Arrangement.SpaceBetween
 ){
     val phoneState = remember{ mutableStateOf("") }
-    Spacer(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-    )
+    Spacer(Modifier
+        .fillMaxWidth()
+        .height(1.dp))
     PhoneField(phoneState)
     GetCodeButton(
         modifier = Modifier.padding(16.dp)
@@ -71,7 +70,8 @@ private fun PhoneField(
             )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
-                text = stringResource(R.string.phone_number)//TODO
+                text = stringResource(R.string.phone_number),
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -86,6 +86,7 @@ private fun GetCodeButton(
     onClick = onClick
 ) {
     Text(
-        text = stringResource(R.string.get_sms)//TODO
+        text = stringResource(R.string.get_sms),
+        style = MaterialTheme.typography.bodySmall
     )
 }

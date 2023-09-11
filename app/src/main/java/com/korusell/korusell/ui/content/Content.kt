@@ -1,5 +1,8 @@
 package com.korusell.korusell.ui.content
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -38,8 +43,14 @@ fun Content(
             )
         },
         content = {
+            val paddings = PaddingValues(
+                start = it.calculateStartPadding(LayoutDirection.Rtl),
+                end = it.calculateEndPadding(LayoutDirection.Rtl),
+                top = it.calculateTopPadding(),
+                bottom = 0.dp
+            )
             MainContent(
-                modifier = Modifier.padding(it),
+                modifier = Modifier.padding(paddings),
                 navController = navController,
                 startScreen = startScreen
             )

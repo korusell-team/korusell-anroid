@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korusell.korusell.data.contacts.ContactsRepositoryImpl
 import com.korusell.korusell.data.contacts.model.Category
+import com.korusell.korusell.data.contacts.model.Contact
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -18,9 +19,17 @@ class ContactsViewModel(
     val currentCategory = mutableStateOf<Category?>(null)
     val currentSubCategory = mutableStateOf<String?>(null)
 
+    val contacts = mutableStateListOf<Contact>()
+
     init {
         updateFilters()
         listenValidFilters()
+        updateContacts()
+    }
+
+    private fun updateContacts(){
+        contacts.clear()
+        contacts.addAll(repo.getContacts())
     }
 
     private fun updateFilters(){
