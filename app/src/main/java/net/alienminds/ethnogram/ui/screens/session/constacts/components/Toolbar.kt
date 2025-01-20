@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import net.alienminds.ethnogram.R
-import net.alienminds.ethnogram.ui.extentions.Avatar
+import net.alienminds.ethnogram.ui.extentions.custom.Avatar
 import net.alienminds.ethnogram.ui.screens.session.constacts.ContactsScreen
 import net.alienminds.ethnogram.ui.theme.AppColor
 

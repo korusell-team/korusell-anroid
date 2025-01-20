@@ -48,14 +48,12 @@ import net.alienminds.ethnogram.mappers.localName
 import net.alienminds.ethnogram.service.categories.entities.Category
 import net.alienminds.ethnogram.service.cities.entities.City
 import net.alienminds.ethnogram.service.users.entities.User
-import net.alienminds.ethnogram.ui.extentions.Avatar
-import net.alienminds.ethnogram.ui.extentions.PageTransitionScreen
-import net.alienminds.ethnogram.ui.extentions.applyBlurForDialog
-import net.alienminds.ethnogram.ui.extentions.rememberBlurDialogState
+import net.alienminds.ethnogram.ui.extentions.custom.Avatar
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.ChipPickerDialog
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.rememberAppDialogState
+import net.alienminds.ethnogram.ui.extentions.transitions.PageTransitionScreen
+import net.alienminds.ethnogram.ui.screens.session.constacts.components.ContactsScreenHeader
 import net.alienminds.ethnogram.ui.screens.session.constacts.components.ContactsToolbar
-import net.alienminds.ethnogram.ui.screens.session.constacts.components.FilterDialog
-import net.alienminds.ethnogram.ui.screens.session.constacts.components.FilterDialogItem
-import net.alienminds.ethnogram.ui.screens.session.constacts.components.Header
 import net.alienminds.ethnogram.ui.screens.session.profile.ProfileScreen
 import net.alienminds.ethnogram.ui.theme.AppColor
 
@@ -70,17 +68,12 @@ class ContactsScreen: PageTransitionScreen {
         val navigator = LocalNavigator.current
         val vm = rememberScreenModel { ContactsViewModel() }
 
-        val dialogCities = rememberBlurDialogState()
-        val dialogCategories = rememberBlurDialogState()
-        val dialogSubCategories = rememberBlurDialogState()
+        val dialogCities = rememberAppDialogState()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AppColor.brown50)
-                .applyBlurForDialog(dialogCities)
-                .applyBlurForDialog(dialogCategories)
-                .applyBlurForDialog(dialogSubCategories)
         ){
             ContactsToolbar(
                 modifier = Modifier
@@ -94,7 +87,7 @@ class ContactsScreen: PageTransitionScreen {
                 onShowProfile = { navigator?.push(ProfileScreen()) }
             )
 
-            Header(
+            ContactsScreenHeader(
                 modifier = Modifier.padding(vertical = 16.dp),
                 searchMode = vm.searchMode,
                 searchText = vm.searchText,
@@ -102,8 +95,6 @@ class ContactsScreen: PageTransitionScreen {
                 currentSubCategory = vm.currentSubCategory,
                 categories = vm.categories,
                 subCategories = vm.subCategories,
-                dialogCategories = dialogCategories,
-                dialogSubCategories = dialogSubCategories,
                 onSelectCategory = vm::selectCategory,
                 onSwitchSearchMode = vm::switchSearchMode,
                 onChangeSearch = { vm.searchText = it },
@@ -129,20 +120,13 @@ class ContactsScreen: PageTransitionScreen {
             )
         }
 
-        val citiesDialogItems = remember(vm.allCities, vm.currentCity){
-            vm.allCities.map {
-                FilterDialogItem(
-                    item = it,
-                    selected = vm.currentCity == it || vm.currentCity?.id == 0,
-                    title = it.localName
-                )
-            }
-        }
-        FilterDialog(
+        ChipPickerDialog(
             state = dialogCities,
             title = stringResource(R.string.filter_by_cities),
-            items = citiesDialogItems,
-            onClick = vm::selectCity,
+            items = vm.allCities,
+            itemTitle = { it.localName },
+            itemSelected = { vm.currentCity == it || vm.currentCity?.id == 0 },
+            onSelect = vm::selectCity
         )
     }
 

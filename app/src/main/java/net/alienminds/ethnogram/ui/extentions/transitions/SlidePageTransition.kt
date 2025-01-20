@@ -1,4 +1,4 @@
-package net.alienminds.ethnogram.ui.extentions
+package net.alienminds.ethnogram.ui.extentions.transitions
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform

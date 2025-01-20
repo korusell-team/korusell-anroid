@@ -49,7 +49,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import net.alienminds.ethnogram.R
-import net.alienminds.ethnogram.ui.extentions.PageTransitionScreen
+import net.alienminds.ethnogram.ui.extentions.transitions.PageTransitionScreen
 import net.alienminds.ethnogram.ui.theme.AppColor
 import net.alienminds.ethnogram.ui.theme.EthnogramTheme
 import net.alienminds.ethnogram.utils.openLink

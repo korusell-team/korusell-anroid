@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
+import net.alienminds.ethnogram.ui.extentions.BackPressHandler
 
 @Composable
 internal fun BackButton(
@@ -27,16 +28,23 @@ internal fun BackButton(
     tint: Color = LocalContentColor.current,
     text: String? = null,
     enabled: Boolean = true,
+    handleSystemButton: Boolean = false,
     onClick: (() -> Unit)? = null
 ){
     val navigator = LocalNavigator.current
+
+    val backPress: () -> Unit = {
+        onClick?.invoke()?: navigator?.pop()
+    }
+
     Row(
         modifier = modifier
             .defaultMinSize(48.dp, 48.dp)
             .clip(CircleShape)
-            .clickable(enabled){
-                onClick?.invoke()?: navigator?.pop()
-            },
+            .clickable(
+                enabled = enabled,
+                onClick = backPress
+            ),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -54,5 +62,10 @@ internal fun BackButton(
                 color = tint
             )
         }
+    }
+    if (handleSystemButton) {
+        BackPressHandler(
+            onBackPressed = backPress
+        )
     }
 }

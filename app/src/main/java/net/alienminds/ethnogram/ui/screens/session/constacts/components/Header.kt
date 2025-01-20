@@ -41,12 +41,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import net.alienminds.ethnogram.R
 import net.alienminds.ethnogram.service.categories.entities.Category
-import net.alienminds.ethnogram.ui.extentions.BlurDialogState
-import net.alienminds.ethnogram.ui.screens.session.constacts.ContactsScreen
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.ChipPickerDialog
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.rememberAppDialogState
 import net.alienminds.ethnogram.ui.theme.AppColor
 
 @Composable
-fun ContactsScreen.Header(
+fun ContactsScreenHeader(
     modifier: Modifier = Modifier,
     searchMode: Boolean,
     searchText: String,
@@ -54,8 +54,6 @@ fun ContactsScreen.Header(
     currentSubCategory: Category?,
     categories: List<Category>,
     subCategories: List<Category>,
-    dialogCategories: BlurDialogState,
-    dialogSubCategories: BlurDialogState,
     onSelectCategory: (Category) -> Unit,
     onSwitchSearchMode: (Boolean) -> Unit,
     onChangeSearch: (String) -> Unit
@@ -129,12 +127,10 @@ fun ContactsScreen.Header(
     }
 
     FiltersCategories(
-        blurState = dialogCategories,
         showAllIcon = searchMode.not(),
         dialogTitle = stringResource(R.string.categories),
         categories = categories,
         currentCategory = currentCategory,
-        onOpenAll = { dialogCategories.show() },
         onSelect = onSelectCategory
     )
 
@@ -143,12 +139,10 @@ fun ContactsScreen.Header(
         visible = visibleSubCategories
     ) {
         FiltersCategories(
-            blurState = dialogSubCategories,
             showAllIcon = searchMode.not(),
             dialogTitle = stringResource(R.string.categories),
             categories = subCategories,
             currentCategory = currentSubCategory,
-            onOpenAll = { dialogSubCategories.show() },
             onSelect = onSelectCategory
         )
     }
@@ -160,14 +154,13 @@ fun ContactsScreen.Header(
 private fun FiltersCategories(
     modifier: Modifier = Modifier,
     showAllIcon: Boolean,
-    blurState: BlurDialogState,
     dialogTitle: String,
     categories: List<Category>,
     currentCategory: Category?,
-    onOpenAll: () -> Unit,
     onSelect: (Category) -> Unit
 ){
     val lazyState = rememberLazyListState()
+    val pickerState = rememberAppDialogState()
     LaunchedEffect(currentCategory) {
         runCatching {
             val index = categories.indexOf(currentCategory)
@@ -186,7 +179,7 @@ private fun FiltersCategories(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if(showAllIcon)
-            openAllItem(onOpenAll)
+            openAllItem(pickerState::show)
 
         textItems(
             categories = categories,
@@ -195,17 +188,13 @@ private fun FiltersCategories(
         )
     }
     if (showAllIcon) {
-        FilterDialog(
-            state = blurState,
+        ChipPickerDialog(
+            state = pickerState,
             title = dialogTitle,
-            items = categories.map {
-                FilterDialogItem(
-                    it,
-                    currentCategory,
-                    "${it.emoji} ${it.title}"
-                )
-            },
-            onClick = onSelect
+            items = categories,
+            itemTitle = { "${it.emoji} ${it.title}" },
+            itemSelected = { it == currentCategory },
+            onSelect = onSelect
         )
     }
 }

@@ -1,4 +1,4 @@
-package net.alienminds.ethnogram.ui.extentions
+package net.alienminds.ethnogram.ui.extentions.custom
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.SubcomposeAsyncImageContent
+import net.alienminds.ethnogram.ui.extentions.shimmerState
 import net.alienminds.ethnogram.ui.theme.AppColor
 import net.alienminds.ethnogram.ui.theme.EthnogramTheme
 

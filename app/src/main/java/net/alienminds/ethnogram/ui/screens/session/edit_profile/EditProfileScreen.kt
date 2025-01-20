@@ -53,6 +53,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -89,15 +90,20 @@ import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import net.alienminds.ethnogram.R
 import net.alienminds.ethnogram.mappers.icon
+import net.alienminds.ethnogram.mappers.localName
 import net.alienminds.ethnogram.mappers.placeholder
 import net.alienminds.ethnogram.mappers.title
 import net.alienminds.ethnogram.service.users.entities.User
-import net.alienminds.ethnogram.ui.extentions.PageIndicator
-import net.alienminds.ethnogram.ui.extentions.PageTransitionScreen
+import net.alienminds.ethnogram.ui.extentions.BackPressHandler
 import net.alienminds.ethnogram.ui.extentions.buttons.ActionButton
 import net.alienminds.ethnogram.ui.extentions.buttons.BackButton
+import net.alienminds.ethnogram.ui.extentions.custom.PageIndicator
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.AppAlertDialog
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.ChipPickerSheet
+import net.alienminds.ethnogram.ui.extentions.custom.dialogs.rememberAppDialogState
 import net.alienminds.ethnogram.ui.extentions.rememberPhotoPicker
 import net.alienminds.ethnogram.ui.extentions.shimmerState
+import net.alienminds.ethnogram.ui.extentions.transitions.PageTransitionScreen
 import net.alienminds.ethnogram.ui.theme.AppColor
 import net.alienminds.ethnogram.utils.AppConst
 import kotlin.math.roundToInt
@@ -139,6 +145,13 @@ class EditProfileScreen: PageTransitionScreen {
             onSelect = vm::addImage
         )
 
+        val categoryPicker = rememberAppDialogState()
+        val cityPicker = rememberAppDialogState()
+
+        val alertPublic = rememberAppDialogState()
+        val alertNotSave = rememberAppDialogState()
+
+
         LaunchedEffect(scrollState.canScrollBackward, vm.images.isEmpty()) {
             if (scrollState.canScrollBackward || vm.images.isEmpty()){
                 isExpanded = false
@@ -148,8 +161,7 @@ class EditProfileScreen: PageTransitionScreen {
         Column(
             modifier = Modifier
                 .verticalScroll(
-                    state = scrollState,
-//                    enabled = vm.loading.not()
+                    state = scrollState
                 )
                 .imePadding(),
             verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -166,7 +178,7 @@ class EditProfileScreen: PageTransitionScreen {
                     width = 2.dp,
                     color = MaterialTheme.colorScheme.outlineVariant.copy(
                         alpha = 1f - expandRatio
-                    ),
+                    )
                 ),
                 isExpanded = isExpanded,
                 pagerState = pagerState,
@@ -213,10 +225,11 @@ class EditProfileScreen: PageTransitionScreen {
             )
 
             CategoryCityBlock(
-                category = null,
-                city = null,
-                onClickCategory = { },
-                onClickCity = { }
+                category = vm.categories?.takeIf { it.isNotEmpty() }?.joinToString { it.title },
+                city = vm.cities?.takeIf { it.isNotEmpty() }?.joinToString { it.localName },
+                isErrorCategory = vm.isErrorCategory,
+                onClickCategory = categoryPicker::show,
+                onClickCity = cityPicker::show
             )
 
             BioBlock(
@@ -247,20 +260,65 @@ class EditProfileScreen: PageTransitionScreen {
             modifier = Modifier.statusBarsPadding(),
             canAdd = vm.images.size < AppConst.MAX_IMAGES,
             canRemove = vm.images.isNotEmpty(),
-            canSave = vm.canSave,
+            edited = vm.edited,
             isExpanded = isExpanded,
             enabled = vm.loading.not(),
             onAddPhoto = { photoPicker.launch() },
             onRemovePhoto = { vm.removeImage(vm.images.getOrNull(pagerState.currentPage)) },
-            onSavePressed = { vm.saveUser() },
-            onBackPressed = { navigator?.pop() }
+            onSavePressed = { when(vm.canSave){
+                true -> vm.saveUser()
+                false -> alertPublic.show()
+            } },
+            onBackPressed = {
+                when(vm.edited){
+                    true -> alertNotSave.show()
+                    false -> navigator?.pop()
+                }
+            }
+        )
+
+
+        ChipPickerSheet(
+            modifier = Modifier.statusBarsPadding(),
+            state = categoryPicker,
+            itemsMap = vm.allCategoriesGrouped,
+            groupTitle = { "${it.emoji} ${it.title}" },
+            itemTitle = { "${it.emoji} ${it.title}" },
+            itemSelected = { vm.categories?.contains(it)?: false },
+            onSelect = { _, item ->
+                vm.selectCategory(item)
+            }
+        )
+        ChipPickerSheet(
+            modifier = Modifier.statusBarsPadding(),
+            state = cityPicker,
+            itemsMap = mapOf("" to vm.allCities.orEmpty()),
+            itemTitle = { it.localName },
+            itemSelected = { vm.cities?.run { any { it.id == 0 } || contains(it) }?: false },
+            onSelect = { _, item ->
+                vm.selectCity(item)
+            }
+        )
+        AppAlertDialog(
+            state = alertPublic,
+            title = stringResource(R.string.alert_public_title),
+            text = stringResource(R.string.alert_public_body),
+        )
+        AppAlertDialog(
+            state = alertNotSave,
+            title = "Выйти без сохранения?",
+            text = "Все данные будут утеряны. Вы уверены что хотите выйти?",
+            confirmColor = MaterialTheme.colorScheme.error,
+            confirmText = "Да, Выйти",
+            dismissText = "Остаться",
+            onConfirm = { navigator?.pop() }
         )
     }
 
     @Composable
     private fun Toolbar(
         modifier: Modifier = Modifier,
-        canSave: Boolean,
+        edited: Boolean,
         canAdd: Boolean,
         canRemove: Boolean,
         isExpanded: Boolean,
@@ -279,6 +337,7 @@ class EditProfileScreen: PageTransitionScreen {
     ){
         BackButton(
             onClick = onBackPressed,
+            handleSystemButton = true,
             enabled = enabled
         )
         AnimatedContent(
@@ -296,7 +355,7 @@ class EditProfileScreen: PageTransitionScreen {
                     showSave = true,
                     canAdd = canAdd,
                     canRemove = canRemove,
-                    canSave = canSave,
+                    canSave = edited,
                     onAddPhoto = onAddPhoto,
                     onRemovePhoto = onRemovePhoto,
                     onSave = onSavePressed,
@@ -305,7 +364,7 @@ class EditProfileScreen: PageTransitionScreen {
             } else {
                 TextButton(
                     onClick = onSavePressed,
-                    enabled = canSave && enabled
+                    enabled = edited && enabled
                 ) {
                     Text(stringResource(R.string.save))
                 }
@@ -462,8 +521,8 @@ class EditProfileScreen: PageTransitionScreen {
                 enabled = loading.not(),
                 onCheckedChange = onCheck,
                 icon = when(isPublic){
-                    true -> painterResource(R.drawable.visibility_on)
-                    false -> painterResource(R.drawable.visibility_off)
+                    true -> painterResource(R.drawable.ic_visibility_on)
+                    false -> painterResource(R.drawable.ic_visibility_off)
                 }
             )
 
@@ -590,6 +649,7 @@ class EditProfileScreen: PageTransitionScreen {
         modifier: Modifier = Modifier,
         category: String?,
         city: String?,
+        isErrorCategory: Boolean,
         onClickCategory: () -> Unit,
         onClickCity: () -> Unit
     ) = Column(
@@ -599,6 +659,7 @@ class EditProfileScreen: PageTransitionScreen {
             ClickableItem(
                 title = stringResource(R.string.category),
                 value = category?: stringResource(R.string.not_specified),
+                isError = isErrorCategory,
                 onClick = onClickCategory
             )
             HorizontalDivider()
@@ -800,17 +861,22 @@ class EditProfileScreen: PageTransitionScreen {
         modifier: Modifier = Modifier,
         title: String,
         value: String,
+        isError: Boolean = false,
         onClick: () -> Unit
     ) = DefaultItem(
         modifier = modifier.clickable(onClick = onClick),
         title = title,
-        supportingContent = { Text(value) },
-        trailingContent = { 
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null
-            )
-        }
+        supportingContent = { Text(
+            text = value,
+            color = when(isError){
+                true -> MaterialTheme.colorScheme.error
+                false -> LocalContentColor.current
+            }
+        ) },
+        trailingContent = { Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null
+        ) }
     )
 
     @Composable
@@ -857,7 +923,8 @@ class EditProfileScreen: PageTransitionScreen {
         leadingContent = leadingContent,
         trailingContent = trailingContent,
         colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+
         )
     )
 

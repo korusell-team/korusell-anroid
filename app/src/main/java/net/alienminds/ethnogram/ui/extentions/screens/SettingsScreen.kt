@@ -1,4 +1,4 @@
-package net.alienminds.ethnogram.ui.extentions
+package net.alienminds.ethnogram.ui.extentions.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -110,7 +110,7 @@ interface SettingsBlockScope{
 
 }
 
-private class SettingsBlockImpl: SettingsBlockScope{
+private class SettingsBlockImpl: SettingsBlockScope {
 
     @Composable
     override fun CheckBoxItem(

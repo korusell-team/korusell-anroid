@@ -1,4 +1,4 @@
-package net.alienminds.ethnogram.ui.extentions
+package net.alienminds.ethnogram.ui.extentions.custom
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

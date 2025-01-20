@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import net.alienminds.ethnogram.R
-import net.alienminds.ethnogram.ui.extentions.PageTransitionScreen
+import net.alienminds.ethnogram.ui.extentions.transitions.PageTransitionScreen
 import net.alienminds.ethnogram.ui.extentions.buttons.BackButton
 import net.alienminds.ethnogram.ui.extentions.fields.OtpTextField
 import net.alienminds.ethnogram.ui.extentions.rootOrThrow

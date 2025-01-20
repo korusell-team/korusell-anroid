@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -83,8 +84,8 @@ import net.alienminds.ethnogram.mappers.roundIcon
 import net.alienminds.ethnogram.mappers.title
 import net.alienminds.ethnogram.service.categories.entities.Category
 import net.alienminds.ethnogram.service.users.entities.User
-import net.alienminds.ethnogram.ui.extentions.PageIndicator
-import net.alienminds.ethnogram.ui.extentions.PageTransitionScreen
+import net.alienminds.ethnogram.ui.extentions.custom.PageIndicator
+import net.alienminds.ethnogram.ui.extentions.transitions.PageTransitionScreen
 import net.alienminds.ethnogram.ui.extentions.buttons.BackButton
 import net.alienminds.ethnogram.ui.extentions.buttons.DropdownButton
 import net.alienminds.ethnogram.ui.screens.session.edit_profile.EditProfileScreen
@@ -436,7 +437,7 @@ class ProfileScreen(
                             style = MaterialTheme.typography.labelMedium,
                             color = AppColor.gray700,
                             fontWeight = FontWeight.Bold,
-                            maxLines = 1,
+                            maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
@@ -490,13 +491,14 @@ class ProfileScreen(
             } }
         )
 
+
         Text(
             modifier = modifier,
             text = buildAnnotatedString {
                 appendTitle()
                 append(bio.take(length))
                 if (minLength < bio.length) {
-                    if (expandedBio.not())append("...  ")
+                    if (expandedBio.not()) append("...  ")
                     appendMoreButton()
                 }
             },

@@ -72,6 +72,9 @@
     <string name="remove_photo">Удалить фото</string>
     <string name="socials_description">Разместите Ваши соц сети и мессенджеры</string>
     <string name="logout">Выйти</string>
+    <string name="alert_public_title">Чтобы сделать аккаунт публичным</string>
+    <string name="alert_public_body">• Укажите имя\n• Загрузите фото\n• Заполните Био\n• Выберите категорию</string>
+    <string name="ok">Ок</string>
 
 
 </resources>
