@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316785912727",
+    "project_id": "ethnogram-1cd0f",
+    "storage_bucket": "ethnogram-1cd0f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316785912727:android:dbad1228c492cad83532d2",
+        "android_client_info": {
+          "package_name": "net.alienminds.ethnogram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdfSNd_y8QmBYRtBoD33ee2ILt9prRDWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

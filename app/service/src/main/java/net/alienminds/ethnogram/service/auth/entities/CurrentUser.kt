@@ -1,0 +1,16 @@
+package net.alienminds.ethnogram.service.auth.entities
+
+import com.google.firebase.auth.FirebaseUser
+
+data class CurrentUser internal constructor(
+    internal val fbUser: FirebaseUser
+){
+    val phoneNumber
+        get() = fbUser.phoneNumber
+
+    val displayName
+        get() = fbUser.displayName
+
+    val photoUrl
+        get() = fbUser.photoUrl
+}

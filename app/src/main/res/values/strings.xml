@@ -1,12 +1,77 @@
 <resources>
-    <string name="app_name">KORUSELL</string>
-    <string name="skip">Пропустить</string>
-    <string name="welcome_text">С легкостью найти \nсамых нужных людей и места!</string>
+<!--    Core-->
+    <string name="app_name">Ethnogram</string>
+    <string name="next">Далее</string>
+    <string name="cancel">Отмена</string>
+    <string name="block">Заблокировать</string>
+    <string name="report">Пожаловаться</string>
+    <string name="signin">Войти</string>
+
+<!--    SignIn-->
     <string name="phone_number">Номер телефона</string>
     <string name="get_sms">Получить СМС</string>
-    <string name="code">Код</string>
-    <string name="login">Войти</string>
+    <string name="auth_phone_description">Войдите или Зарегестрируйтесь указав номер телефона</string>
+    <string name="phone_placeholder">+82100001111</string>
+    <string name="terms_objectionable_text">"Политикой нежелательного контента "</string>
+    <string name="terms_objectionable_link">"https://wide-arthropod-bad.notion.site/00bc2c43d10449a68463233a80007ee6"</string>
+    <string name="terms_confidentiality_text">Политикой конфеденциальности</string>
+    <string name="terms_confidentiality_link">https://wide-arthropod-bad.notion.site/4d3f3c37114243bcb9bd97ee1646bc11</string>
+    <string name="auth_terms_1">"Авторизуясь, Вы соглашаетесь с "</string>
+    <string name="auth_terms_2">"и с "</string>
+    <string name="auth_otp_description">Введите шестизначный код полученный в SMS</string>
+    <string name="resend_code">Отправить код еще раз</string>
+
+<!--    Contacts-->
     <string name="contacts">Контакты</string>
-    <string name="search">Поиск</string>
-    <string name="map">Карты</string>
+    <string name="categories">Категории</string>
+    <string name="filter_by_cities">Фильтр по городам</string>
+    <string name="empty_list">🙈 Список пуст…</string>
+    <string name="support_gmail">guagetru.bla@gmail.com</string>
+    <string name="objectionable_policy0">"Если Вы обнаружили контент (фото, текст, ссылки), который нарушает Политику Нежелательного Контента, пожалуйста, напишите мне на "</string>
+    <string name="objectionable_policy1">. Также Вы можете заблокировать Пользователя или пожаловаться на него нажав на три точки в правом верхнем углу экрана</string>
+
+
+<!--    Socials-->
+    <string name="telegram">Telegram</string>
+    <string name="instagram">Instagram</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="threads">Threads</string>
+    <string name="youtube">Youtube</string>
+    <string name="web_site">Сайт</string>
+    <string name="facebook">Facebook</string>
+    <string name="kakao">Kakao</string>
+    <string name="tiktok">Tiktok</string>
+    <string name="linked_in">LinkedIn</string>
+    <string name="twitter">Twitter</string>
+    <string name="edit">Изменить</string>
+    <string name="save">Сохранить</string>
+    <string name="public_account_description">Сделайте ваш аккаунт публичным, чтобы пользователи могли найти вас в списке</string>
+    <string name="show_phone_number">Показать номер телефона</string>
+    <string name="show_phone_description">Доступность номера телефона позволяет позвонить Вам или отправить SMS в один тап прямо из Приложения</string>
+    <string name="input_name_and_surname">Укажите имя и фамилию</string>
+    <string name="public_account">Публичный Аккаунт</string>
+    <string name="nickname">Никнейм</string>
+    <string name="channel">Канал</string>
+    <string name="link_placeholder">Ссылка (без https://)</string>
+    <string name="id">id</string>
+    <string name="profile">профайл</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="category">Категория</string>
+    <string name="city">Город</string>
+    <string name="category_city_description">Выберите Вашу деятельность и города которые она покрывает.\nПример: Ведущий. Вся Корея</string>
+    <string name="bio">Био</string>
+    <string name="bio_description">Краткая информация о Вас.\nПример: Научу говорить по корейский без боли и страданий</string>
+    <string name="info">О себе</string>
+    <string name="info_description">В этой секции вы можете выложиться по полной и описать Вашу деятельность большим полотном текста.</string>
+    <string name="socials_and_messengers">Соцсети и мессенджеры:</string>
+    <string name="not_specified">Не указано</string>
+    <string name="bio_placeholder">Пару слов, туда - сюда</string>
+    <string name="info_placeholder">Опишите свою деятельность</string>
+    <string name="add_photo">Добавить фото</string>
+    <string name="remove_photo">Удалить фото</string>
+    <string name="socials_description">Разместите Ваши соц сети и мессенджеры</string>
+    <string name="logout">Выйти</string>
+
+
 </resources>
