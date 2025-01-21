@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,11 +46,16 @@ fun Avatar(
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     shape: Shape = CircleShape,
-    border: BorderStroke = BorderStroke(0.dp, Color.Transparent)
+    border: BorderStroke = BorderStroke(0.dp, Color.Transparent),
+    onClick: (() -> Unit)? = null
 ) = SubcomposeAsyncImage(
     modifier = modifier
         .clip(shape)
-        .border(border, shape),
+        .border(border, shape)
+        .clickable(
+            enabled = onClick != null,
+            onClick = { onClick?.invoke() }
+        ),
     model = model,
     alignment = alignment,
     contentScale = contentScale,

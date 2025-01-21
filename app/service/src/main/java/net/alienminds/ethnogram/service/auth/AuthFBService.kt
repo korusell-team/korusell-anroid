@@ -11,6 +11,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.tasks.await
+import net.alienminds.ethnogram.service.BuildConfig
 import net.alienminds.ethnogram.service.auth.PhoneVerificationCallback.PhoneVerificationState
 import net.alienminds.ethnogram.service.auth.entities.CurrentUser
 import net.alienminds.ethnogram.service.auth.entities.SignInByPhoneResult
@@ -27,6 +28,7 @@ class AuthFBService internal constructor(): BaseService(), AuthService {
 
     override val currentUser
         get() = auth.currentUser?.let { CurrentUser(it) }
+
 
 
     /**

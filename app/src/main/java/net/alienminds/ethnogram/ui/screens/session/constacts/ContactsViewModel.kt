@@ -42,7 +42,9 @@ class ContactsViewModel: AppScreenModel() {
         searchMode = false
         when(category.isCategory){
             true -> currentCategory = category.takeUnless { it == currentCategory }
-            false -> currentSubCategory = category.takeUnless { it == currentSubCategory }
+            false -> currentSubCategory = category.takeUnless { it == currentSubCategory }?.apply {
+                currentCategory = allCategories.find { it.id == p_id }
+            }
         }
         if (category.isCategory){
             currentSubCategory = null

@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -114,18 +113,17 @@ class ProfileScreen(
         val scrollState = rememberScrollState()
         val scrollDp by remember { derivedStateOf { with(density){ scrollState.value.toDp() } } }
 
-        val toolbarState by remember { derivedStateOf {
-            vm.user?.image.isNullOrEmpty() || scrollDp >= 22.dp
-        } }
+        val toolbarImageState by remember { derivedStateOf { vm.user?.image.isNullOrEmpty() } }
+        val toolbarScrollState by remember { derivedStateOf { scrollDp >= 22.dp } }
 
-        val toolbarAlpha by animateFloatAsState(when(toolbarState){
-            true -> 1f
-            false -> 0f
+        val toolbarAlpha by animateFloatAsState(when{
+            toolbarScrollState -> 1f
+            else -> 0f
         })
 
-        val toolbarTint by animateColorAsState(when(toolbarState){
-            true -> AppColor.blue600
-            false -> AppColor.gray300
+        val toolbarTint by animateColorAsState(when{
+            toolbarImageState || toolbarScrollState -> AppColor.blue600
+            else -> AppColor.gray300
         })
 
 
@@ -318,27 +316,46 @@ class ProfileScreen(
         images: List<String>,
     ) = Box(
         modifier = modifier
+            .background(AppColor.gray200)
     ){
-        val pagerState = rememberPagerState { max(images.size, 1) }
-        HorizontalPager(
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState
-        ) {
-            AsyncImage(
+        if (images.isEmpty()){
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(
+                    text = "\uD83D\uDE25",
+                    style = MaterialTheme.typography.displayMedium
+                )
+                Text(
+                    text = stringResource(R.string.no_photo_placeholder),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            val pagerState = rememberPagerState { max(images.size, 1) }
+            HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-                model = images.getOrNull(it),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
+                state = pagerState
+            ) {
+                AsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = images.getOrNull(it),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
+                )
+            }
+            PageIndicator(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .fillMaxWidth(),
+                pagerState = pagerState,
+                tint = AppColor.gray300
             )
         }
-        PageIndicator(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .fillMaxWidth(),
-            pagerState = pagerState,
-            tint = AppColor.gray300
-        )
+
     }
 
     @Composable

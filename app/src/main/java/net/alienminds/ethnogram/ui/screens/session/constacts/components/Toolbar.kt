@@ -85,11 +85,10 @@ fun ContactsScreen.ContactsToolbar(
     )
 
     Avatar(
-        modifier = Modifier
-            .size(34.dp)
-            .clickable { onShowProfile() },
+        modifier = Modifier.size(34.dp),
         model = avatarUrl,
         initials = initials,
+        onClick = onShowProfile,
         border = BorderStroke(1.dp, AppColor.gray900),
         textStyle = MaterialTheme.typography.bodyMedium,
         contentScale = ContentScale.Crop
