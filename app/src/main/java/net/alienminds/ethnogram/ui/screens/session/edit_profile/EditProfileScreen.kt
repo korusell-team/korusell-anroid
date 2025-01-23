@@ -94,7 +94,6 @@ import net.alienminds.ethnogram.mappers.localName
 import net.alienminds.ethnogram.mappers.placeholder
 import net.alienminds.ethnogram.mappers.title
 import net.alienminds.ethnogram.service.users.entities.User
-import net.alienminds.ethnogram.ui.extentions.BackPressHandler
 import net.alienminds.ethnogram.ui.extentions.buttons.ActionButton
 import net.alienminds.ethnogram.ui.extentions.buttons.BackButton
 import net.alienminds.ethnogram.ui.extentions.custom.PageIndicator
@@ -196,20 +195,16 @@ class EditProfileScreen: PageTransitionScreen {
 
             PublicBlock(
                 modifier = Modifier.padding(top = 16.dp),
-                isPublic = vm.isPublic?: false,
+                isPublic = vm.isPublic,
                 loading = vm.loading,
                 onCheck = { vm.isPublic = it }
             )
 
             PhoneNumberBlock(
-                isAvailablePhone = vm.isAvailablePhone?: false,
-                phone = vm.phone.orEmpty(),
-                isError = vm.isErrorPhone,
+                isAvailablePhone = vm.isAvailablePhone,
+                phone = vm.phone,
                 loading = vm.loading,
-                onChange = { isAvailablePhone, phone ->
-                    vm.isAvailablePhone = isAvailablePhone
-                    vm.phone = phone
-                }
+                onChange = { vm.isAvailablePhone = it }
             )
 
             NameBlock(
@@ -543,12 +538,9 @@ class EditProfileScreen: PageTransitionScreen {
     private fun PhoneNumberBlock(
         modifier: Modifier = Modifier,
         isAvailablePhone: Boolean,
-        isError: Boolean,
         loading: Boolean,
         phone: String,
-        onChange: (
-            isAvailable: Boolean,
-            phone: String) -> Unit
+        onChange: (Boolean) -> Unit
     ) = Column(
         modifier = modifier
     ){
@@ -560,7 +552,7 @@ class EditProfileScreen: PageTransitionScreen {
                 icon = rememberVectorPainter(Icons.Default.Phone),
                 checked = isAvailablePhone,
                 enabled = loading.not(),
-                onCheckedChange = { onChange(it, phone) }
+                onCheckedChange = { onChange(it) }
             )
             HorizontalDivider(Modifier.padding(horizontal = 16.dp))
             OutlinedTextField(
@@ -569,10 +561,9 @@ class EditProfileScreen: PageTransitionScreen {
                     .fillMaxWidth(),
                 value = phone,
                 enabled = loading.not(),
-                onValueChange = { onChange(isAvailablePhone, it) },
+                readOnly = true,
+                onValueChange = {  },
                 label = { Text(stringResource(R.string.phone_number)) },
-                placeholder = { Text(stringResource(R.string.phone_placeholder)) },
-                isError = isError,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone
                 )

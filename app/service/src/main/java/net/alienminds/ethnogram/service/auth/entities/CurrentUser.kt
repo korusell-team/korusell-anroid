@@ -5,6 +5,9 @@ import com.google.firebase.auth.FirebaseUser
 data class CurrentUser internal constructor(
     internal val fbUser: FirebaseUser
 ){
+    val uid
+        get() = fbUser.uid
+
     val phoneNumber
         get() = fbUser.phoneNumber
 

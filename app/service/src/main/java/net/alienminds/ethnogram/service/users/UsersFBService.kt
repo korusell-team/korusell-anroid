@@ -70,7 +70,10 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
 
     override val me by lazy {
         allUsers.map { users ->
-            users.find { it.uid == myId }
+            users.find {
+                currentUser?.phoneNumber.isNullOrEmpty().not() &&
+                it.phone == currentUser?.phoneNumber
+            }
         }
     }
 
@@ -95,13 +98,17 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
         val isCreated = runCatching {
             me.timeout(5.seconds).first {
                 it?.uid != null
-            }?.created != null
+            }?.run {
+                phone.isNullOrEmpty().not() &&
+                created != null
+            }
         }.getOrNull()?: false
 
         val map = values.associate { Pair(it.field.key, it.value) }.toMutableMap()
         map[User.Fields.UID.key] = myId
         map[User.Fields.UPDATED.key] = FieldValue.serverTimestamp()
         if (isCreated.not()){
+            map[User.Fields.PHONE.key] = currentUser?.phoneNumber?: throw IllegalStateException("Auth Phone is not available")
             map[User.Fields.CREATED.key] = FieldValue.serverTimestamp()
         }
 

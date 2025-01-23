@@ -114,7 +114,7 @@ class User internal constructor(
         val IS_ONLINE = Field("isOnline", false)
         val PRIORITY = Field("priority", Int.MAX_VALUE)
 
-        val PHONE = Field<String?>("phone", null)
+        internal val PHONE = Field<String?>("phone", null)
         val TELEGRAM = Field<String?>("telegram", null)
         val INSTAGRAM = Field<String?>("instagram", null)
         val WHATS_APP = Field<String?>("whatsApp", null)
@@ -138,8 +138,13 @@ class User internal constructor(
         val CITIES = Field("cities", emptyList<Int>())
         val BLOCKED = Field("blockedBy", emptyList<String>())
         val REPORTS = Field("reports", emptyList<String>())
-        val CREATED = Field<Instant?>("created", null)
-        val UPDATED = Field<Instant?>("updated", null)
+        internal val CREATED = Field<Instant?>("created", null)
+        internal val UPDATED = Field<Instant?>("updated", null)
+    }
+
+
+    override fun toString(): String {
+        return "(uid = $uid, name = $name, surname = $surname, phone = $phone)"
     }
     
 }

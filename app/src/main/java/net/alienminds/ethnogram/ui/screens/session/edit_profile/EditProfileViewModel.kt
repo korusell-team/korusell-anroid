@@ -38,7 +38,7 @@ class EditProfileViewModel: AppScreenModel() {
 
     var isPublic by mutableStateOf(profile?.isPublic?: false)
     var isAvailablePhone by mutableStateOf(profile?.phoneIsAvailable?: false)
-    var phone by mutableStateOf(profile?.phone?: authProfile?.phoneNumber)
+    val phone by derivedStateOf { profile?.phone?: authProfile?.phoneNumber.orEmpty() }
     var name by mutableStateOf(profile?.name)
     var surname by mutableStateOf(profile?.surname)
     var bio by mutableStateOf(profile?.bio)
@@ -63,14 +63,12 @@ class EditProfileViewModel: AppScreenModel() {
     val isErrorName by derivedStateOf { isPublic && name.isNullOrEmpty() }
     val isErrorSurname by derivedStateOf { isPublic && surname.isNullOrEmpty() }
     val isErrorCategory by derivedStateOf { isPublic && categoryIds.isEmpty() }
-    val isErrorPhone by derivedStateOf { isAvailablePhone && phone.isNullOrEmpty() }
 
     val edited by derivedStateOf {
         addedImages.isNotEmpty() ||
         removedImages.isNotEmpty() ||
         isPublic != (profile?.isPublic?: false) ||
         isAvailablePhone != (profile?.phoneIsAvailable?: false) ||
-        phone != profile?.phone ||
         name != profile?.name ||
         surname != profile?.surname ||
         bio != profile?.bio ||
@@ -85,8 +83,7 @@ class EditProfileViewModel: AppScreenModel() {
         isErrorName.not() &&
         isErrorSurname.not() &&
         isErrorCategory.not() &&
-        isErrorAvatar.not() &&
-        isErrorPhone.not()
+        isErrorAvatar.not()
     }
 
     val allCategoriesGrouped by derivedStateOf {
@@ -114,7 +111,6 @@ class EditProfileViewModel: AppScreenModel() {
 
                 isPublic = user?.isPublic?: false
                 isAvailablePhone = user?.phoneIsAvailable?: false
-                phone = user?.phone?: authProfile?.phoneNumber
                 name = user?.name
                 surname = user?.surname
                 bio = user?.bio
@@ -215,7 +211,6 @@ class EditProfileViewModel: AppScreenModel() {
     private fun getEditedFields(): List<InputField<Any>> = listOf(
         Pair(InputField(User.Fields.IS_PUBLIC, isPublic), profile?.isPublic?: false),
         Pair(InputField(User.Fields.PHONE_IS_AVAILABLE, isAvailablePhone), profile?.phoneIsAvailable?: false),
-        Pair(InputField(User.Fields.PHONE, phone.orEmpty()), profile?.phone.orEmpty()),
         Pair(InputField(User.Fields.NAME, name.orEmpty()), profile?.name.orEmpty()),
         Pair(InputField(User.Fields.SURNAME, surname.orEmpty()), profile?.surname.orEmpty()),
         Pair(InputField(User.Fields.BIO, bio.orEmpty()), profile?.bio.orEmpty()),
