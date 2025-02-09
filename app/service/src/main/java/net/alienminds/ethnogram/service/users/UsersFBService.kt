@@ -16,8 +16,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -41,9 +43,6 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
     private val currentUser
         get() = Firebase.auth.currentUser
 
-    private val myId
-        get() = currentUser?.uid?: throw UserNotAuthorized()
-
     private val collection
         get() = Firebase.firestore.collection(COLLECTION_NAME)
 
@@ -52,20 +51,19 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
 
     private val snapshots = MutableStateFlow<QuerySnapshot?>(null)
 
-
     override val allUsers by lazy {
         snapshots.map { snapshot ->
             snapshot
                 ?.map { User(it) }
                 ?.sortedByDescending { it.likes.size }
                 ?: emptyList()
-        }
+        }.stateIn(scope, SharingStarted.Eagerly, emptyList())
     }
 
     override val publicUsers by lazy {
         allUsers.map { users ->
             users.filter { it.isPublic }
-        }
+        }.stateIn(scope, SharingStarted.Eagerly, emptyList())
     }
 
     override val me by lazy {
@@ -74,8 +72,13 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
                 currentUser?.phoneNumber.isNullOrEmpty().not() &&
                 it.phone == currentUser?.phoneNumber
             }
-        }
+        }.stateIn(scope, SharingStarted.Eagerly, null)
     }
+
+    private val meId: String
+        get() = getMyId()
+
+
 
 
     init { listenCache() }
@@ -100,12 +103,12 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
                 it?.uid != null
             }?.run {
                 phone.isNullOrEmpty().not() &&
-                created != null
+                        created != null
             }
-        }.getOrNull()?: false
+        }.getOrNull() == true
 
         val map = values.associate { Pair(it.field.key, it.value) }.toMutableMap()
-        map[User.Fields.UID.key] = myId
+        map[User.Fields.UID.key] = meId
         map[User.Fields.UPDATED.key] = FieldValue.serverTimestamp()
         if (isCreated.not()){
             map[User.Fields.PHONE.key] = currentUser?.phoneNumber?: throw IllegalStateException("Auth Phone is not available")
@@ -113,7 +116,7 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
         }
 
         val task = collection
-            .document(myId)
+            .document(meId)
             .set(map, SetOptions.merge())
         task.await()
         task.isSuccessful
@@ -123,7 +126,7 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
         uri: Uri
     ) = withSave{
 
-        val reference = storage.reference.child("avatars/$myId/${UUID.randomUUID()}.jpg")
+        val reference = storage.reference.child("avatars/$meId/${UUID.randomUUID()}.jpg")
         val uploadTask = reference.putFile(uri)
         uploadTask.continueWithTask { task ->
             if (task.isSuccessful.not()) {
@@ -144,7 +147,6 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
         userId: String,
         isFavorite: Boolean
     ) = withSave{
-        val meId = currentUser?.uid?: throw UserNotAuthorized()
         when(isFavorite){
             true -> addToArray(userId, User.Fields.LIKES, meId)
             false -> removeFromArray(userId, User.Fields.LIKES, meId)
@@ -154,16 +156,20 @@ class UsersFBService internal constructor(): BaseService(), UsersService {
     override suspend fun blockUser(
         userId: String
     ) = withSave{
-        val meId = currentUser?.uid?: throw UserNotAuthorized()
         addToArray(userId, User.Fields.BLOCKED, meId)
     }
 
     override suspend fun reportUser(
         userId: String
     ) = withSave{
-        val meId = currentUser?.uid?: throw UserNotAuthorized()
+
         addToArray(userId, User.Fields.REPORTS, meId)
     }
+
+    private fun getMyId() =
+        me.value?.uid
+            ?: currentUser?.uid
+            ?: throw UserNotAuthorized()
 
     private suspend fun <T>addToArray(
         userId: String,

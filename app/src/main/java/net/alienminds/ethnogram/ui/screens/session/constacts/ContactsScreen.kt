@@ -180,7 +180,7 @@ class ContactsScreen: PageTransitionScreen {
                         .padding(horizontal = 16.dp)
                         .animateItem(),
                     user = user,
-                    isFavorite = user.likes.any { me?.uid?.equals(it)?: false },
+                    isFavorite = user.likes.any { me?.uid?.equals(it) == true },
                     categories = categories,
                     cities = cities,
                     onChangeFavorite = { onChangeFavorite(user.uid, it) },

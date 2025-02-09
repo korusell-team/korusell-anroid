@@ -86,7 +86,7 @@ class User internal constructor(
             }
         }
 
-    data class Link internal constructor(
+    class Link internal constructor(
         val value: String,
         val type: LinkType
     )

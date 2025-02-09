@@ -15,18 +15,6 @@ class SessionScreen: Screen {
 
     @Composable
     override fun Content() {
-        val meState = remember { API.users.me }
-        val me by meState.collectAsState(null)
-        LaunchedEffect(me) {
-            val fbUser = API.auth.currentUser
-            println(
-                "DB User: ${me.toString()}\n"+
-                "FB User: ${fbUser.toString()}\n"+
-                "Compare:\n"+
-                "   UID: ${me?.uid} == ${fbUser?.uid} = ${me?.uid == fbUser?.uid}\n"+
-                "   Phone: ${me?.phone} == ${fbUser?.phoneNumber} = ${me?.phone == fbUser?.phoneNumber}\n\n"
-            )
-        }
         Navigator(ContactsScreen()){
             SlidePageTransition(it)
         }
